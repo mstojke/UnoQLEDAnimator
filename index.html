@@ -73,6 +73,13 @@
                 <h5 class="mb-2">Arduino Output</h5>
                 <textarea id="codeOutput" class="form-control" rows="16" readonly></textarea>
                 <div id="copyStatus" class="small text-muted mt-1"></div>
+
+                <div class="mt-3 d-flex gap-2 flex-nowrap ">
+                    <button id="btnExport" class="btn btn-outline-success btn-sm text-nowrap">⬇ Export</button>
+                    <input type="file" id="importFile" accept=".json" class="form-control form-control-sm text-nowrap" >
+                    <button id="btnImport" class="btn btn-outline-info btn-sm text-nowrap">⬆ Import</button>
+                </div>
+                <div id="importError" class="mt-1"></div>
             </div>
         </div>
     </div>

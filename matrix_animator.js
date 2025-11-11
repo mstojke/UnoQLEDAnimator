@@ -164,6 +164,54 @@ async function copyCode() {
     setTimeout(() => (copyStatus.textContent = ""), 2000);
 }
 
+function importJSON() {
+    const file = importFile.files[0];
+    if (!file) { importError.textContent = "Please select a JSON file."; importError.style.display = "block"; return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            const obj = JSON.parse(e.target.result);
+            validateImport(obj);
+            frames = obj.frames;
+            currentFrame = 0;
+            updateMatrixFromFrame();
+            updateCode();
+            importError.style.display = "none";
+            alert("✅ Animation imported successfully!");
+        } catch (err) {
+            importError.textContent = "❌ " + err.message;
+            importError.style.display = "block";
+        }
+    };
+    reader.readAsText(file);
+}
+
+function validateImport(obj) {
+    if (!obj || typeof obj !== "object") throw new Error("Invalid JSON structure.");
+    if (obj.rows !== rows_count || obj.cols !== columns_count)
+        throw new Error(`Matrix size mismatch. Expected ${rows_count}x${columns_count}.`);
+    if (!Array.isArray(obj.frames)) throw new Error("Missing or invalid 'frames' array.");
+    obj.frames.forEach((f, i) => {
+        if (typeof f.name !== "string" || !Array.isArray(f.data))
+            throw new Error(`Invalid frame at index ${i}.`);
+        if (/\s/.test(f.name)) throw new Error(`Frame '${f.name}' has spaces in name.`);
+        if (f.data.length !== total) throw new Error(`Frame '${f.name}' has incorrect data length.`);
+        if (!f.data.every(v => v === 0 || v === 1))
+            throw new Error(`Frame '${f.name}' contains invalid LED values.`);
+    });
+}
+
+function exportJSON() {
+    const data = { rows: rows_count, cols: columns_count, frames };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "led_animation.json";
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
 document.getElementById("btnClear").addEventListener("click", clearMatrix);
 document.getElementById("btnFill").addEventListener("click", fillMatrix);
 document.getElementById("btnInvert").addEventListener("click", invertMatrix);
@@ -174,6 +222,8 @@ document.getElementById("deleteFrameBtn").addEventListener("click", deleteFrame)
 document.getElementById("playBtn").addEventListener("click", playAnimation);
 document.getElementById("nextFrameBtn").addEventListener("click", nextFrame);
 document.getElementById("prevFrameBtn").addEventListener("click", prevFrame);
+document.getElementById("btnExport").onclick = exportJSON;
+document.getElementById("btnImport").onclick = importJSON;
 
 createMatrix();
 updateMatrixFromFrame();
