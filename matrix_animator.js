@@ -212,6 +212,27 @@ function exportJSON() {
     URL.revokeObjectURL(url);
 }
 
+function exportINO() {
+    const codeHeader = `// Arduino Uno Q LED Matrix Animator\n// https://mstojke.github.io/UnoQLEDAnimator/\n// ${new Date().toLocaleString()}\n\n#include "Arduino_LED_Matrix.h"\n#include "Arduino_RouterBridge.h"\n\n`;
+    const frameCode = frames.map(f => {
+        const rows = [];
+        for (let r = 0; r < rows_count; r++)
+            rows.push("  " + f.data.slice(r * columns_count, (r + 1) * columns_count).join(",") + ",");
+        return `// ${f.name}\nuint8_t ${f.name}[${total}] = {\n${rows.join("\n")}\n};`;
+    }).join("\n\n");
+    const arrayDecl = `\n\nArduino_LED_Matrix matrix;\nuint8_t* animation[] = { ${frames.map(f => f.name).join(", ")} };\nconst int frameCount = ${frames.length};\n\n`;
+
+    const demoCode = `void setup() {\n\tmatrix.begin();\n}\n\nvoid loop() {\n  for (int i = 0; i < frameCount; i++) {\n\tmatrix.draw(animation[i]);\n\tdelay(100);\n  }\n}\n`;
+    const finalCode = codeHeader + frameCode + arrayDecl + demoCode;
+
+    const blob = new Blob([finalCode], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "led_animation.ino";
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
 document.getElementById("btnClear").addEventListener("click", clearMatrix);
 document.getElementById("btnFill").addEventListener("click", fillMatrix);
 document.getElementById("btnInvert").addEventListener("click", invertMatrix);
@@ -224,6 +245,7 @@ document.getElementById("nextFrameBtn").addEventListener("click", nextFrame);
 document.getElementById("prevFrameBtn").addEventListener("click", prevFrame);
 document.getElementById("btnExport").onclick = exportJSON;
 document.getElementById("btnImport").onclick = importJSON;
+document.getElementById("btnExportINO").onclick = exportINO;
 
 createMatrix();
 updateMatrixFromFrame();
