@@ -65,7 +65,8 @@
                     <button id="btnClear" class="btn btn-outline-secondary btn-sm">Clear</button>
                     <button id="btnInvert" class="btn btn-outline-secondary btn-sm">Invert</button>
                     <button id="btnFill" class="btn btn-outline-secondary btn-sm">Fill</button>
-                    <button id="btnCopy" class="btn btn-primary btn-sm">Copy Code</button>
+                    <button id="btnCopy" class="btn btn-outline-primary btn-sm">Copy Code</button>
+                    <button id="btnExportINO" class="btn btn-outline-success btn-sm">⬇ Export .ino</button>
                 </div>
             </div>
 
@@ -73,6 +74,13 @@
                 <h5 class="mb-2">Arduino Output</h5>
                 <textarea id="codeOutput" class="form-control" rows="16" readonly></textarea>
                 <div id="copyStatus" class="small text-muted mt-1"></div>
+
+                <div class="mt-3 d-flex gap-2 flex-nowrap ">
+                    <button id="btnExport" class="btn btn-outline-success btn-sm text-nowrap">⬇ Export</button>
+                    <input type="file" id="importFile" accept=".json" class="form-control form-control-sm text-nowrap" >
+                    <button id="btnImport" class="btn btn-outline-info btn-sm text-nowrap">⬆ Import</button>
+                </div>
+                <div id="importError" class="mt-1"></div>
             </div>
         </div>
     </div>
