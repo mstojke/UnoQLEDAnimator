@@ -3,6 +3,7 @@ const columns_count = 13;
 const total = rows_count * columns_count;
 
 const matrixContainer = document.getElementById("matrixContainer");
+const timelineContainer = document.getElementById("timelineContainer");
 const codeOutput = document.getElementById("codeOutput");
 const copyStatus = document.getElementById("copyStatus");
 const frameIndicator = document.getElementById("frameIndicator");
@@ -42,6 +43,44 @@ function toggleCell(e) {
     cell.classList.toggle("on");
     frames[currentFrame].data[index] = cell.classList.contains("on") ? 1 : 0;
     updateCode();
+}
+
+function renderTimeline() {
+    if (!timelineContainer) return;
+    timelineContainer.innerHTML = "";
+
+    frames.forEach((frame, index) => {
+        const frameEl = document.createElement("div");
+        frameEl.className = "timeline-frame";
+        if (index === currentFrame) frameEl.classList.add("selected");
+        frameEl.dataset.index = index;
+        frameEl.addEventListener("click", () => {
+            currentFrame = index;
+            updateMatrixFromFrame();
+            updateCode();
+        });
+
+        const grid = document.createElement("div");
+        grid.className = "timeline-grid";
+
+        for (let r = 0; r < rows_count; r++) {
+            for (let c = 0; c < columns_count; c++) {
+                const cell = document.createElement("div");
+                cell.className = "timeline-cell";
+                if (frame.data[r * columns_count + c] === 1) {
+                    cell.classList.add("on");
+                }
+                grid.appendChild(cell);
+            }
+        }
+
+        const label = document.createElement("div");
+        label.className = "thumbnail-label";
+        label.textContent = frame.name;
+        frameEl.appendChild(grid);
+        frameEl.appendChild(label);
+        timelineContainer.appendChild(frameEl);
+    });
 }
 
 function updateMatrixFromFrame() {
@@ -139,6 +178,7 @@ function updateCode() {
     const arrayNames = frames.map(f => f.name).join(", ");
     const allCode = `${lines.join("\n\n")}\n\nuint8_t* animation[] = { ${arrayNames} };`;
     codeOutput.value = allCode;
+    renderTimeline();
 }
 
 frameNameInput.addEventListener("input", () => {

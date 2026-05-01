@@ -12,6 +12,67 @@ body {
     margin-top: 0 !important;
 }
 
+.timeline-card {
+    background-color: #ffffff;
+}
+
+.timeline-container {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+}
+
+.timeline-frame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 110px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 0.4rem;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.timeline-frame.selected {
+    border-color: #0d6efd;
+    background-color: #e7f1ff;
+    box-shadow: 0 0 0 1px rgba(13, 110, 253, 0.16);
+}
+
+.timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(13, 6px);
+    gap: 1px;
+    padding: 0.15rem;
+    background: #dee2e6;
+    border-radius: 4px;
+}
+
+.timeline-cell {
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 1px;
+}
+
+.timeline-cell.on {
+    background-color: #0d6efd;
+}
+
+.thumbnail-label {
+    margin-top: 0.35rem;
+    font-size: 0.76rem;
+    text-align: center;
+    color: #495057;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
 .matrix-row {
     display: flex;
 }
